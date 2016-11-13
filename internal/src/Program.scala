@@ -1,8 +1,15 @@
 import BridgeExtender._
 
 object Program extends App{
-  //shouldnt req -`  ` just -` ` should be fine. also \n shouldnt be req'd
-  val auction : Auction = "-  3d 3N AP" // maybe specify dealer and skip -
+  val auction : Auction = 
+    """
+    - - 3d 3NT
+    P P x P
+    4c 4d 4h 4s
+    6NT P 7NT P
+    P   x P   P
+    xx AP
+    """
   
   
   val N =  

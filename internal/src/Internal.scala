@@ -1,7 +1,29 @@
 
-case class Auction(a : String)
+case class Bid(a: String)
 {
-  def display(afterHowLong : Int = 0) = {println(s"N  E  S  W\n$a")}
+  override def toString : String = 
+  {
+    require(a.length <= 3, {println(s"$a is not a legal bid."
+        +" Bids must be 3 characters or less. Use p for pass and x for double.")})
+    var extraSpaces = ""
+    for (i <- 1 to (3-a.length)) extraSpaces += " "
+    " " + a.replace('s', '♠').replace('h', '♥').replace('d', '♦').replace('c', '♣') + extraSpaces
+  }
+}
+
+case class Auction(a : List[Bid])
+{
+  def display(afterHowLong : Int = 0) = 
+  {
+    var formattedBids : String = ""
+    for (i <- 1 to a.length)
+    {
+      formattedBids += a(i-1)
+      if (i % 4 == 0)
+        formattedBids += "\n"
+    }
+    println(s" W   N   E   S\n$formattedBids")
+  }
 }
 
 case class Card(value : Char, suit: Char) // we T for 10 for now
@@ -88,7 +110,7 @@ object BridgeExtender {
 
 	implicit def StringToAuction(value : String) : Auction =
 	{
-	  Auction(value)
+	  Auction(value.trim.split("\\s+").map{x => Bid(x)}.toList)
 	}
 
 }
