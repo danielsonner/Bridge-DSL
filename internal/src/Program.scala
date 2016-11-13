@@ -1,7 +1,7 @@
 import BridgeExtender._
 
 object Program extends App{
-  val auction : Auction = 
+  val auction =
     """
     - - 3d 3NT
     P P x P
@@ -18,7 +18,7 @@ object Program extends App{
       KQ54h
       7d
       KJ85c
-      """ // string could've been one line but I think multiline style nicer
+      """
   val E = 
       """
       103h
@@ -32,13 +32,8 @@ object Program extends App{
       AQ4d
       A762c
       """
-  val W =
-      """
-      QJ872s
-      AJ972h
-      9d8d
-      10c
-      """
+  val W ="QJ872s AJ972h 98d 10c"
+
   val fullDeal : Deal = Deal(N,E,S,W) // This line really shouldn't be required
   auction.display(0) // I'd prefer to say something like display auction
   fullDeal.display(0) // I'd prefer to say something like display deal after 0 tricks
