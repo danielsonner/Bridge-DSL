@@ -38,10 +38,11 @@ case class Hand(h : List[Card])
   override def toString: String = 
   {
     val SPACER = "             "
-    val nSpades = "♠" + h.filter(_.suit == 's').mkString("")
-    val nHearts = "♥" + h.filter(_.suit == 'h').mkString("")
-    val nClubs = "♣" + h.filter(_.suit == 'c').mkString("")
-    val nDiamonds = "♦" + h.filter(_.suit == 'd').mkString("")
+    val hands = listStringHands
+    val nSpades = listStringHands(0)
+    val nHearts = listStringHands(1)
+    val nDiamonds = listStringHands(2)
+    val nClubs = listStringHands(3)
     s"$SPACER$nSpades\n$SPACER$nHearts\n$SPACER$nDiamonds\n$SPACER$nClubs"
   }
   def listStringHands: List[String] = 
