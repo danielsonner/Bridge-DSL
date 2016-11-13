@@ -13,15 +13,18 @@ case class Bid(a: String)
 
 case class Auction(a : List[Bid])
 {
-  def display(afterHowLong : Int = 0) = 
+  def display(afterHowLong : Int = a.length) = 
   {
+    require(afterHowLong <= a.length, {println("There were only "+a.length+s" bids but you are trying to display $afterHowLong bids.")})
     var formattedBids : String = ""
-    for (i <- 1 to a.length)
+    for (i <- 1 to afterHowLong)
     {
       formattedBids += a(i-1)
       if (i % 4 == 0)
         formattedBids += "\n"
     }
+    if (afterHowLong != a.length)
+      formattedBids += " ?"
     println(s" W   N   E   S\n$formattedBids")
   }
 }

@@ -35,6 +35,6 @@ object Program extends App{
   val W ="QJ872s AJ972h 98d 10c"
 
   val fullDeal : Deal = Deal(N,E,S,W) // This line really shouldn't be required
-  auction.display(0) // I'd prefer to say something like display auction
+  auction.display() // note that you can put in after how many tricks you want the bidding displayed
   fullDeal.display(0) // I'd prefer to say something like display deal after 0 tricks
 }
