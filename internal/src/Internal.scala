@@ -56,7 +56,7 @@ case class Hand(h : List[Card])
 }
 case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
 {
-  def display (numTricks : Int) : Unit = 
+  def displayHelp(n: Hand, e: Hand, s: Hand, w: Hand) : Unit =
   {
     val SPACER = "             "
     val el : List[String] = e.listStringHands
@@ -65,9 +65,29 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
       var extraSpaces : String = ""
       for (i <- 1 to (13-m.length)) {extraSpaces += " "}
       s"$m$SPACER$extraSpaces$a\n"}}.mkString("")
-    println(s"$n\n$ewCombined\n$s")
+    println(s"$n\n$ewCombined\n$s\n")
+  }
+  def display () : Unit = 
+  {
+    displayHelp(n,e,s,w)
+  }
+  
+  def displayAfter(numTricks : Int, played : PlayedCards) : Unit =
+  {
+    require(numTricks*4 <= played.cardL.length)
+    // currently -'s get added by literal extension but when the card is played they won't be
+    // added here. Not sure if we want -'s or not here so quick fix is removing them
+    var shortenedPlayed : List[Card] = List(Card('-', 's'), Card('-', 'h'), Card('-', 'd'), Card('-', 'c'))
+    for (i <- 0 to (4*numTricks -1)) shortenedPlayed = played.cardL(i) :: shortenedPlayed
+    val N = Hand(n.h.filter(x => !(shortenedPlayed contains x)))
+    val E = Hand(e.h.filter(x => !(shortenedPlayed contains x)))
+    val S = Hand(s.h.filter(x => !(shortenedPlayed contains x)))
+    val W = Hand(w.h.filter(x => !(shortenedPlayed contains x)))
+    displayHelp(N, E, S, W)
   }
 }
+
+case class PlayedCards(cardL : List[Card])
 
 object BridgeExtender {
 
@@ -112,6 +132,10 @@ object BridgeExtender {
 	  Hand(cardL)
 	}
 
+	/**
+	 * Creates an auction from a string with bids separated by any number of spaces
+	 * Assumes that W is the first bid entered
+	 */
 	implicit def StringToAuction(value : String) : Auction =
 	{
 	  Auction(value.trim.split("\\s+").map{x => Bid(x)}.toList)
