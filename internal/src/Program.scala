@@ -48,7 +48,7 @@ object Program extends App{
       ))
 
   val fullDeal : Deal = Deal(N,E,S,W) // This line really shouldn't be required
-  auction.display() // note that you can put in after how many tricks you want the bidding displayed
+  auction.display() // note that you can put in after how many bids you want the bidding displayed
   fullDeal.display()
   fullDeal.displayAfter(6, playDiagram)
 }
