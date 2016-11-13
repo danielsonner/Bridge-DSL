@@ -45,6 +45,9 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
 
 object BridgeExtender {
 
+  /**
+   * Converts something like "5c" to the appropriate Card
+   */
 	implicit def StringToCard(value : String) : Card =
 		{
 			var rank : Char = value(0)
@@ -53,10 +56,29 @@ object BridgeExtender {
 			Card(rank, suit)
 		}
 	
+	/**
+	 * Converts a string such as "103hKJ106432dQ943c" with or without whitespace to a Hand
+	 */
 	implicit def StringToCardL(value : String) : Hand =
 	{
-	  val sepSuits = (value.map{ x => if (x == '1') 'T' else x}.filter(_ != '0') // change 10 to T
-	                  .split(Array('s', 'h', 'd', 'c')).map(_.trim)) // split by suit
+	  var hand = value
+	  // add in voided suits
+	  if (!hand.contains("s"))
+	    hand = "-s" + hand
+	  if (!hand.contains("h"))
+	    hand = hand.split("s").mkString("s-h")
+	  if (!hand.contains("d"))
+	    hand = hand.split("h").mkString("h-d")
+	  if (!hand.contains("c"))
+	    hand = hand + "-c"
+
+	  // change 10 to T
+	  hand = hand.map{ x => if (x == '1') 'T' else x}.filter(_ != '0')
+
+	  // split by suit
+	  val sepSuits = hand.split(Array('s', 'h', 'd', 'c')).map(_.trim)
+
+	  // Create and return the card list
 	  val cardL : List[Card] = (sepSuits(0).map{ x => Card(x,'s')}.toList
 	                           ::: sepSuits(1).map{ x => Card(x,'h')}.toList
 	                           ::: sepSuits(2).map{ x => Card(x,'d')}.toList

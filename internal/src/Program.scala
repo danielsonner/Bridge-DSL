@@ -5,32 +5,33 @@ object Program extends App{
   val auction : Auction = "-  3d 3N AP" // maybe specify dealer and skip -
   
   
-  val N : Hand =  """
-                  10653s
-                  KQ54h
-                  7d
-                  KJ85c
-                  """ // string could've been one line but I think multiline style nicer
-
-  val E : Hand = 
+  val N =  
       """
-      - s
+      10653s
+      KQ54h
+      7d
+      KJ85c
+      """ // string could've been one line but I think multiline style nicer
+  val E = 
+      """
       103h
       KJ106432d
       Q943c
-      """//TODO: Handle voids in Internal.scala and let user not write voided suits
-  val S : Hand = """
+      """
+  val S = 
+      """
       AK94s
       86h
       AQ4d
       A762c
       """
-  val W : Hand = Hand(List(
-      "Qs", "Js", "8s", "7s", "2s",
-      "Ah", "Jh", "9h", "7h", "2h",
-      "9d", "8d",
-      "10c"
-      ))
+  val W =
+      """
+      QJ872s
+      AJ972h
+      9d8d
+      10c
+      """
   val fullDeal : Deal = Deal(N,E,S,W) // This line really shouldn't be required
   auction.display(0) // I'd prefer to say something like display auction
   fullDeal.display(0) // I'd prefer to say something like display deal after 0 tricks
