@@ -49,8 +49,8 @@ case class Hand(h : List[Card])
   {
     val nSpades = "♠" + h.filter(_.suit == 's').mkString("")
     val nHearts = "♥" + h.filter(_.suit == 'h').mkString("")
-    val nDiamonds = "♣" + h.filter(_.suit == 'd').mkString("")
-    val nClubs = "♦" + h.filter(_.suit == 'c').mkString("")
+    val nDiamonds = "♦" + h.filter(_.suit == 'd').mkString("")
+    val nClubs = "♣" + h.filter(_.suit == 'c').mkString("")
     List(nSpades,nHearts,nDiamonds,nClubs)
   }
 }
