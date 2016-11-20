@@ -1,3 +1,11 @@
+case class InvalidVulnerabilityException(s : String) extends Exception
+
+object Direction extends Enumeration {
+    type Direction = Value
+    val North, South, East, West = Value
+}
+
+import Direction._
 
 case class Bid(a: String)
 {
@@ -13,8 +21,19 @@ case class Bid(a: String)
 
 case class Auction(a : List[Bid])
 {
-  def display(afterHowLong : Int = a.length) = 
+  def display(afterHowLong : Int = a.length, vulnerability: String = "") =
   {
+    vulnerability.toLowerCase() match {
+      case "" => None
+      case "none vul" => println("None Vul\n")
+      case "both vul" => println("Both Vul\n")
+      case "e/w vul" =>  println("E/W Vul\n")
+      case "n/s vul" => println("N/S Vul\n")
+      case x => if(!x.equals("")) {
+          println("Vulnerability must be either: None Vul, Both Vul, E/W Vul, or N/S Vul")
+          throw new InvalidVulnerabilityException("Vulnerability must be either: None Vul, Both Vul, E/W Vul, or N/S Vul")
+        }
+    }
     require(afterHowLong <= a.length, {println("There were only "+a.length+s" bids but you are trying to display $afterHowLong bids.")})
     var formattedBids : String = ""
     for (i <- 1 to afterHowLong)
@@ -27,6 +46,8 @@ case class Auction(a : List[Bid])
       formattedBids += " ?"
     println(s" W   N   E   S\n$formattedBids")
   }
+
+  def display(vulnerability: String) : Unit = display(a.length, vulnerability)
 }
 
 case class Card(value : Char, suit: Char) // we T for 10 for now
@@ -67,11 +88,33 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
       s"$m$SPACER$extraSpaces$a\n"}}.mkString("")
     println(s"$n\n$ewCombined\n$s\n")
   }
+
   def display () : Unit = 
   {
     displayHelp(n,e,s,w)
   }
   
+  def display (a : Direction) =
+  {
+    // TODO: Improve the display a bit
+    a match {
+      case North => displayHelp(n,Hand(List()),Hand(List()),Hand(List()))
+      case East => displayHelp(Hand(List()),e,Hand(List()),Hand(List()))
+      case South => displayHelp(Hand(List()),Hand(List()),s,Hand(List()))
+      case West => displayHelp(Hand(List()),Hand(List()),Hand(List()),w)
+    }
+  }
+
+  def display (a : Direction, b : Direction) =
+  {
+    // TODO: Improve the display a bit
+    val N = if (a == North || b == North) n else Hand(List())
+    val E = if (a == East || b == East) e else Hand(List())
+    val S = if (a == South || b == South) s else Hand(List())
+    val W = if (a == West || b == West) w else Hand(List())
+    displayHelp(N,E,S,W)
+  }
+
   def displayAfter(numTricks : Int, played : PlayedCards) : Unit =
   {
     require(numTricks*4 <= played.cardL.length)
@@ -140,5 +183,14 @@ object BridgeExtender {
 	{
 	  Auction(value.trim.split("\\s+").map{x => Bid(x)}.toList)
 	}
+
+	/**
+	 * Creates a PlayedCards from a string of cards played seperated by spaces
+	 */
+	implicit def StringToPlayedCards(value : String) : PlayedCards =
+	{
+	  PlayedCards(value.trim.split("\\s+").map{StringToCard(_)}.toList)
+	}
+
 
 }

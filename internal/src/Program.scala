@@ -1,6 +1,14 @@
 import BridgeExtender._
+import Direction._
 
 object Program extends App{
+  /**
+   * Auctions are entered with bids separated by spaces.
+   * Use - to indicate no ability to bid (P for pass). W always starts the bidding.
+   * Hands are entered as strings with 's', 'h', 'd', and 'c' to indicate the end of a suit
+   * To create a deal, the incantation Deal(N,E,W,S) must be used where N, E, S, W are hands.
+   * Deals and auction have display functions.
+   */
   val auction =
     """
     - - 3d 3NT
@@ -10,7 +18,6 @@ object Program extends App{
     P   x P   P
     xx AP
     """
-  
   
   val N =  
       """
@@ -34,21 +41,22 @@ object Program extends App{
       """
   val W ="QJ872s AJ972h 98d 10c"
   
-  // TODO: some literal extension and stuff to improve this
-  val playDiagram = PlayedCards(List(
-      "8d", "7d", "2d", "Qd",
-      "6h", "2h", "Kh", "3h",
-      "5c", "3c", "Ac", "10c",
-      "2c","2s","Kc","4c",
-      "3s", "3d", "As", "7s",
-      "8h", "9h", "Qh", "10h",
-      "5s", "4d", "Ks", "8s",
-      "Ad", "9d", "4h", "6d",
-      "5d", "7h", "5h", "10d"
-      ))
+  val playDiagram =
+      """
+      8d 7d 2d Qd
+      6h 2h Kh 3h
+      5c 3c Ac 10c
+      2c 2s Kc 4c
+      3s 3d As 7s
+      8h 9h Qh 10h
+      5s 4d Ks 8s
+      Ad 9d 4h 6d
+      5d 7h 5h 10d
+      """
 
-  val fullDeal : Deal = Deal(N,E,S,W) // This line really shouldn't be required
-  auction.display() // note that you can put in after how many bids you want the bidding displayed
-  fullDeal.display()
+
+  val fullDeal = Deal(N,E,S,W) // This line really shouldn't be required
+  auction.display("None Vul")
+  fullDeal.display(North, South)
   fullDeal.displayAfter(6, playDiagram)
 }
