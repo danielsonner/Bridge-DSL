@@ -6,7 +6,7 @@ object Program extends App{
    * Auctions are entered with bids separated by spaces.
    * Use - to indicate no ability to bid (P for pass). W always starts the bidding.
    * Hands are entered as strings with 's', 'h', 'd', and 'c' to indicate the end of a suit
-   * To create a deal, the incantation Deal(N,E,W,S) must be used where N, E, S, W are hands.
+   * To create a deal, the incantation Deal(N,E,S,W) must be used where N, E, S, W are hands.
    * Deals and auction have display functions.
    */
   val auction =
@@ -55,8 +55,9 @@ object Program extends App{
       """
 
 
-  val fullDeal = Deal(N,E,S,W) // This line really shouldn't be required
+  val fullDeal = Deal(N,E,S,W)
   auction.display("None Vul")
-  fullDeal.display(North, South)
+  fullDeal.display()
+  // fullDeal.display(South, North)
   fullDeal.displayAfter(6, playDiagram)
 }

@@ -77,7 +77,8 @@ case class Hand(h : List[Card])
 }
 case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
 {
-  def displayHelp(n: Hand, e: Hand, s: Hand, w: Hand) : Unit =
+  def displayHelp(n: Hand, e: Hand, s: Hand, w: Hand, 
+      dirOne : Direction = null, dirTwo : Direction = null) : Unit =
   {
     val SPACER = "             "
     val el : List[String] = e.listStringHands
@@ -86,7 +87,20 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
       var extraSpaces : String = ""
       for (i <- 1 to (13-m.length)) {extraSpaces += " "}
       s"$m$SPACER$extraSpaces$a\n"}}.mkString("")
-    println(s"$n\n$ewCombined\n$s\n")
+    
+    // determine what to print based off dirOne and dirTwo
+    val N = if (dirOne == North || dirTwo == North) s"$n\n" else ""
+    val E = if (dirOne == East || dirTwo == East) el.map{x => s"$SPACER$SPACER$x"}mkString("\n") else ""
+    val S = if (dirOne == South || dirTwo == South) s"\n$s" else ""
+    val W = if (dirOne == West || dirTwo == West) wl.mkString("\n") else ""
+    if ((dirOne == null && dirTwo == null)) 
+      println(s"$n\n$ewCombined\n$s\n")
+    else if ((dirOne == East && dirTwo == West) 
+        || (dirOne == West && dirTwo == East))
+      println(s"$ewCombined\n")
+    else
+      println(s"$N$E$W$S\n")
+    
   }
 
   def display () : Unit = 
@@ -96,23 +110,12 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
   
   def display (a : Direction) =
   {
-    // TODO: Improve the display a bit
-    a match {
-      case North => displayHelp(n,Hand(List()),Hand(List()),Hand(List()))
-      case East => displayHelp(Hand(List()),e,Hand(List()),Hand(List()))
-      case South => displayHelp(Hand(List()),Hand(List()),s,Hand(List()))
-      case West => displayHelp(Hand(List()),Hand(List()),Hand(List()),w)
-    }
+    displayHelp(n,e,s,w,a)
   }
 
   def display (a : Direction, b : Direction) =
   {
-    // TODO: Improve the display a bit
-    val N = if (a == North || b == North) n else Hand(List())
-    val E = if (a == East || b == East) e else Hand(List())
-    val S = if (a == South || b == South) s else Hand(List())
-    val W = if (a == West || b == West) w else Hand(List())
-    displayHelp(N,E,S,W)
+    displayHelp(n,e,s,w,a,b)
   }
 
   def displayAfter(numTricks : Int, played : PlayedCards) : Unit =
