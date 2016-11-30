@@ -53,6 +53,16 @@ case class Auction(a : List[Bid])
 case class Card(value : Char, suit: Char) // we T for 10 for now
 {
   override def toString: String = (value.toString)
+  def toStringSuited: String =
+    {
+      var printedSuit : String = suit match{
+        case 's'|'S' => "♠"
+        case 'h'|'H' => "♥"
+        case 'd'|'D' => "♦"
+        case _ => "♣"
+      }
+      value.toString + printedSuit
+    }
 }
 case class Hand(h : List[Card])
 {
@@ -118,7 +128,7 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
     displayHelp(n,e,s,w,a,b)
   }
 
-  def displayAfter(numTricks : Int, played : PlayedCards) : Unit =
+  def displayAfter(numTricks : Int, played : PlayDiagram) : Unit =
   {
     require(numTricks*4 <= played.cardL.length)
     // currently -'s get added by literal extension but when the card is played they won't be
@@ -133,7 +143,23 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
   }
 }
 
-case class PlayedCards(cardL : List[Card])
+case class PlayDiagram(cardL : List[Card])
+{
+  def displayHelp(cards: List[Card], out : String, n : Int) : Unit =
+  {
+    val SP = "    "
+    if (cards.length > 4)
+      displayHelp(cards.drop(4), out + n + ". " + cards(0).toStringSuited + SP + cards(1).toStringSuited
+          + SP + cards(2).toStringSuited + SP + cards(3).toStringSuited + "\n", n+1)
+    else
+      println(out + n + ". " + cards.map{x => x.toStringSuited + SP}.mkString(""))
+  }
+
+  def display () : Unit =
+  {
+    displayHelp(cardL, "   Lead  2nd   3rd   4th\n", 1)
+  }
+}
 
 object BridgeExtender {
 
@@ -190,9 +216,9 @@ object BridgeExtender {
 	/**
 	 * Creates a PlayedCards from a string of cards played seperated by spaces
 	 */
-	implicit def StringToPlayedCards(value : String) : PlayedCards =
+	implicit def StringToPlayedCards(value : String) : PlayDiagram =
 	{
-	  PlayedCards(value.trim.split("\\s+").map{StringToCard(_)}.toList)
+	  PlayDiagram(value.trim.split("\\s+").map{StringToCard(_)}.toList)
 	}
 
 

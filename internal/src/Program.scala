@@ -36,12 +36,12 @@ object Program extends App{
       """
       AK94s
       86h
-      AQ4d
+      AQ5d
       A762c
       """
   val W ="QJ872s AJ972h 98d 10c"
   
-  val playDiagram =
+  val playDiagram : PlayDiagram=
       """
       8d 7d 2d Qd
       6h 2h Kh 3h
@@ -60,4 +60,6 @@ object Program extends App{
   fullDeal.display()
   // fullDeal.display(South, North)
   fullDeal.displayAfter(6, playDiagram)
+  playDiagram.display()
+  fullDeal.displayAfter(9, playDiagram)
 }
