@@ -19,10 +19,29 @@ object Program extends App{
     xx AP
     """
   
+  val scientific : Auction=
+    """
+    - P 2d* P
+    2NT* P 3h* P
+    4NT* P 5h* P
+    6c* P 6s* P
+    7s P P P
+    """
+  val annotations =
+    """
+    Precision: 10-15 HCP; 4414, 4405, or (43)15 shape
+    Asking
+    4=3=1=5, non-minimum
+    RKC for spades
+    2 keycards without the spade Q
+    Club suit ask
+    AK or KQ in clubs
+    """
+
   val N =  
       """
       10653s
-      KQ54h
+      kQ54h
       7d
       KJ85c
       """
@@ -56,6 +75,7 @@ object Program extends App{
 
 
   val fullDeal = Deal(N,E,S,W)
+  scientific.display(ann=annotations)
   auction.display("None Vul")
   fullDeal.display()
   // fullDeal.display(South, North)

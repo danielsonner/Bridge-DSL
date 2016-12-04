@@ -11,17 +11,69 @@ case class Bid(a: String)
 {
   override def toString : String = 
   {
-    require(a.length <= 3, {println(s"$a is not a legal bid."
-        +" Bids must be 3 characters or less. Use p for pass and x for double.")})
+    require(a.length <= 4, {println(s"$a is not a legal bid."
+        +" Bids must be 4 characters or less. Use p for pass and x for double.")})
     var extraSpaces = ""
     for (i <- 1 to (3-a.length)) extraSpaces += " "
-    " " + a.replace('s', '♠').replace('h', '♥').replace('d', '♦').replace('c', '♣') + extraSpaces
+    // usually we want a leading space, but in the case of a four character bid
+    // like 4NT* we can't afford leading space
+    val firstSpace = if (a.length == 4) "" else " "
+    firstSpace + a.toUpperCase.replace('S', '♠').replace('H', '♥').replace('D', '♦').replace('C', '♣') + extraSpaces
   }
 }
 
+case class Annotations(annotations : List[String]) {}
+
 case class Auction(a : List[Bid])
 {
-  def display(afterHowLong : Int = a.length, vulnerability: String = "") =
+  /**
+   * Converts something like 5 to ⁵
+   * I was unable to find perfectly similar superscripts so two
+   * digit numbers may look a bit strange such as ¹⁰ but very
+   * very few bidding sequences will have 10 or more artificial bids
+   */
+  def numToSuperScript(n : String) : String =
+  {
+    if (n.length() == 0) return ""
+    val Zero = "⁰"
+    val One = "¹"
+    val Two = "²"
+    val Three = "³"
+    val Four = "⁴"
+    val Five = "⁵"
+    val Six = "⁶"
+    val Seven = "⁷"
+    val Eight = "⁸"
+    val Nine = "⁹"
+    val retV = n(0) match {
+      case '0' => Zero
+      case '1' => One
+      case '2' => Two
+      case '3' => Three
+      case '4' => Four
+      case '5' => Five
+      case '6' => Six
+      case '7' => Seven
+      case '8' => Eight
+      case '9' => Nine
+    }
+    if (n.length() == 1)
+      retV
+    else
+      retV + numToSuperScript(n.tail)
+  }
+
+  /**
+   * Takes something like "4NT*" and 1 and converts it to
+   * "4NT¹"
+   */
+  def addAnnotationSuperscipt(s : String, n : Int) : String =
+  {
+
+    s.dropRight(1) + numToSuperScript(n.toString())
+  }
+
+  def display(afterHowLong : Int = a.length, vulnerability: String = "", ann : Annotations = null) =
   {
     vulnerability.toLowerCase() match {
       case "" => None
@@ -36,15 +88,32 @@ case class Auction(a : List[Bid])
     }
     require(afterHowLong <= a.length, {println("There were only "+a.length+s" bids but you are trying to display $afterHowLong bids.")})
     var formattedBids : String = ""
+    var currentSuperScript : Int = 1
     for (i <- 1 to afterHowLong)
     {
-      formattedBids += a(i-1)
+      val currentBid : String = a(i-1).toString()
+      if (currentBid contains "*") {
+        formattedBids += addAnnotationSuperscipt(currentBid, currentSuperScript)
+        currentSuperScript += 1
+      } else {
+        formattedBids += currentBid
+      }
       if (i % 4 == 0)
         formattedBids += "\n"
     }
     if (afterHowLong != a.length)
       formattedBids += " ?"
     println(s" W   N   E   S\n$formattedBids")
+
+    // Display the explanations of the bids
+    if (ann != null)
+    {
+      for (x <- 0 to (ann.annotations.length-1))
+      {
+        println((x+1).toString() + ". " + ann.annotations(x))
+      }
+      println("") // add a newline after so it doesnt run into next displayed thing
+    }
   }
 
   def display(vulnerability: String) : Unit = display(a.length, vulnerability)
@@ -52,7 +121,7 @@ case class Auction(a : List[Bid])
 
 case class Card(value : Char, suit: Char) // we T for 10 for now
 {
-  override def toString: String = (value.toString)
+  override def toString: String = (value.toString.toUpperCase)
   def toStringSuited: String =
     {
       var printedSuit : String = suit match{
@@ -61,7 +130,7 @@ case class Card(value : Char, suit: Char) // we T for 10 for now
         case 'd'|'D' => "♦"
         case _ => "♣"
       }
-      value.toString + printedSuit
+      value.toString.toUpperCase + printedSuit
     }
 }
 case class Hand(h : List[Card])
@@ -219,6 +288,11 @@ object BridgeExtender {
 	implicit def StringToPlayedCards(value : String) : PlayDiagram =
 	{
 	  PlayDiagram(value.trim.split("\\s+").map{StringToCard(_)}.toList)
+	}
+
+  implicit def StringToAnnotations(value : String) : Annotations =
+	{
+	  Annotations(value.trim.split("[\\r\\n]+").map(_.trim).toList)
 	}
 
 
