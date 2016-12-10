@@ -8,7 +8,7 @@ should work. To run the simple example program `cd` to the directory containing 
 ```
 scalac Internal.scala
 scalac SimpleExample.scala
-scala SimpleExample.scala
+scala SimpleExample
 ```
 The first command compiles the internal DSL. The second command compiles the
 sample program and the final command runs the sample program. When the sample
