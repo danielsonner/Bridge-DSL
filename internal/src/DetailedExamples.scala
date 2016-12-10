@@ -4,7 +4,7 @@ import Direction._
 /**
  * This example program attempts to show all the features of the language.
  * Generally one will just make use of some of the features, but this example
- * is it show what is possible to do in the language.
+ * is to show what is possible to do in the language.
  */
 object Program extends App{
   /**
