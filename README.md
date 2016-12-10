@@ -34,3 +34,8 @@ None Vul
              ♦Q43
              ♣98
 ```
+The [detailed example](https://github.com/danielsonner/Bridge-DSL/blob/master/internal/src/DetailedExamples.scala)
+program should give a sense of all that is possible with the langauge while the
+[simple example](https://github.com/danielsonner/Bridge-DSL/blob/master/internal/src/SimpleExample.scala)
+should be enough to see how to write a program that just displays a bridge hand
+and auction.
