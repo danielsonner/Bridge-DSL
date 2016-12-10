@@ -6,7 +6,7 @@ import Direction._
  * Generally one will just make use of some of the features, but this example
  * is to show what is possible to do in the language.
  */
-object Program extends App{
+object DetailedExample extends App{
   /**
    * Auctions are entered with bids separated by spaces.
    * Use - to indicate no ability to bid (P for pass). W always starts the bidding.

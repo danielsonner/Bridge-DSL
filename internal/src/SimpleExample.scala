@@ -4,7 +4,7 @@ import Direction._
 /**
  * This is an example of showing an auction and a hand.
  */
-object Hand2 extends App{
+object SimpleExample extends App{
   val auction =
     """
     - - 1c P
