@@ -1,6 +1,11 @@
 import BridgeExtender._
 import Direction._
 
+/**
+ * This example program attempts to show all the features of the language.
+ * Generally one will just make use of some of the features, but this example
+ * is it show what is possible to do in the language.
+ */
 object Program extends App{
   /**
    * Auctions are entered with bids separated by spaces.
@@ -9,16 +14,12 @@ object Program extends App{
    * To create a deal, the incantation Deal(N,E,S,W) must be used where N, E, S, W are hands.
    * Deals and auction have display functions.
    */
-  val auction =
+  val auction : Auction =
     """
     - - 3d 3NT
-    P P P P
-    4c 4d 4h 4s
-    6NT P 7NT P
-    P   x P   P
-    xx AP
+    P P P
     """
-  
+
   val scientific : Auction=
     """
     - P 2d* P
@@ -29,29 +30,29 @@ object Program extends App{
     """
   val annotations =
     """
-    Precision: 10-15 HCP; 4414, 4405, or (43)15 shape
-    Asking
-    4=3=1=5, non-minimum
-    RKC for spades
-    2 keycards without the spade Q
-    Club suit ask
-    AK or KQ in clubs
+    * Precision: 10-15 HCP; 4414, 4405, or (43)15 shape
+    * Asking
+    * 4=3=1=5, non-minimum
+    * RKC for spades
+    * 2 keycards without the spade Q
+    * Club suit ask
+    * AK or KQ in clubs
     """
 
-  val N =  
+  val N =
       """
       10653s
-      kQ54h
+      KQ54h
       7d
       KJ85c
       """
-  val E = 
+  val E =
       """
       103h
       KJ106432d
       Q943c
       """
-  val S = 
+  val S =
       """
       AK94s
       86h
@@ -59,7 +60,7 @@ object Program extends App{
       A762c
       """
   val W ="QJ872s AJ972h 98d 10c"
-  
+
   val playDiagram : PlayDiagram=
       """
       8d 7d 2d Qd
@@ -76,9 +77,10 @@ object Program extends App{
 
   val fullDeal = Deal(N,E,S,W)
   scientific.display(ann=annotations)
-  auction.display("None Vul")
+  auction.display(3, "None Vul")
+  auction.display()
   fullDeal.display()
-  // fullDeal.display(South, North)
+  fullDeal.display(North, East)
   fullDeal.displayAfter(6, playDiagram)
   playDiagram.display()
   fullDeal.displayAfter(9, playDiagram)

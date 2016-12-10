@@ -1,5 +1,8 @@
 case class InvalidVulnerabilityException(s : String) extends Exception
 
+/**
+ * A Direction represents a player sitting in one of the four cardinal directions.
+ */
 object Direction extends Enumeration {
     type Direction = Value
     val North, South, East, West = Value
@@ -7,6 +10,10 @@ object Direction extends Enumeration {
 
 import Direction._
 
+/**
+ * Represents a single bid. Artifical bids may be indicated using `*`. `-` may
+ * be used to indicate no ability to bid.
+ */
 case class Bid(a: String)
 {
   override def toString : String = 
@@ -22,13 +29,22 @@ case class Bid(a: String)
   }
 }
 
+/**
+ * A case class to store a series of annotations about a bridge auction.
+ * Can be passed into the Auction's display function.
+ */
 case class Annotations(annotations : List[String]) {}
 
+/**
+ * A full auction in bridge, which consists of a list of bids.
+ * The list of bids always starts with the bid made by West. A bid of '-'
+ * can be used to indicate that a player cannot bid.
+ */
 case class Auction(a : List[Bid])
 {
   /**
    * Converts something like 5 to ⁵
-   * I was unable to find perfectly similar superscripts so two
+   * I was unable to find perfectly similar unicode superscripts so two
    * digit numbers may look a bit strange such as ¹⁰ but very
    * very few bidding sequences will have 10 or more artificial bids
    */
@@ -73,6 +89,11 @@ case class Auction(a : List[Bid])
     s.dropRight(1) + numToSuperScript(n.toString())
   }
 
+  /**
+   * Displays an auction. Can optionally specify to only display the first afterHowLong bids,
+   * to show the vulnerability (None Vul, Both Vul, E/W Vul, or N/S Vul), and to show annotations
+   * for artificial bids (note that the artificial bids should be marked with an `*`).
+   */
   def display(afterHowLong : Int = a.length, vulnerability: String = "", ann : Annotations = null) =
   {
     vulnerability.toLowerCase() match {
@@ -119,11 +140,17 @@ case class Auction(a : List[Bid])
   def display(vulnerability: String) : Unit = display(a.length, vulnerability)
 }
 
-case class Card(value : Char, suit: Char) // we T for 10 for now
+/**
+ * Represents a single playing card, such as the Ace of Spades.
+ * Ten is represented with a T so that things will align nicely.
+ */
+case class Card(value : Char, suit: Char)
 {
   override def toString: String = (value.toString.toUpperCase)
   def toStringSuited: String =
     {
+     require("shdcSHDC" contains suit, {println(s"$suit is not a legal suit."
+        +" Suits must be c, h, d, or s.")})
       var printedSuit : String = suit match{
         case 's'|'S' => "♠"
         case 'h'|'H' => "♥"
@@ -133,6 +160,10 @@ case class Card(value : Char, suit: Char) // we T for 10 for now
       value.toString.toUpperCase + printedSuit
     }
 }
+
+/**
+ * Represents one bridge hand. May contain less than 13 cards.
+ */
 case class Hand(h : List[Card])
 {
   override def toString: String = 
@@ -145,6 +176,11 @@ case class Hand(h : List[Card])
     val nClubs = listStringHands(3)
     s"$SPACER$nSpades\n$SPACER$nHearts\n$SPACER$nDiamonds\n$SPACER$nClubs"
   }
+
+  /**
+   * Returns a list of the hands suits formatted nicely. List is ordered by suit
+   * hierarchy (spades, hearts, diamonds, clubs).
+   */
   def listStringHands: List[String] = 
   {
     val nSpades = "♠" + h.filter(_.suit == 's').mkString("")
@@ -154,8 +190,16 @@ case class Hand(h : List[Card])
     List(nSpades,nHearts,nDiamonds,nClubs)
   }
 }
+
+/**
+ * Represents a full bridge deal of 4 hands.
+ */
 case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
 {
+
+  /**
+   * Helper function that does th work of formatting and displaying the hands.
+   */
   def displayHelp(n: Hand, e: Hand, s: Hand, w: Hand, 
       dirOne : Direction = null, dirTwo : Direction = null) : Unit =
   {
@@ -212,6 +256,10 @@ case class Deal(n: Hand, e: Hand, s: Hand, w: Hand)
   }
 }
 
+/**
+ * Represents a play diagram which is a list of cards in the order they have
+ * been played.
+ */
 case class PlayDiagram(cardL : List[Card])
 {
   def displayHelp(cards: List[Card], out : String, n : Int) : Unit =
@@ -283,16 +331,19 @@ object BridgeExtender {
 	}
 
 	/**
-	 * Creates a PlayedCards from a string of cards played seperated by spaces
+	 * Creates a PlayDiagram from a string of cards played seperated by spaces
 	 */
-	implicit def StringToPlayedCards(value : String) : PlayDiagram =
+	implicit def StringToPlayDiagram(value : String) : PlayDiagram =
 	{
 	  PlayDiagram(value.trim.split("\\s+").map{StringToCard(_)}.toList)
 	}
 
+	/**
+	 * Converts a string with annotations seperated by *'s to an Annotations
+	 */
   implicit def StringToAnnotations(value : String) : Annotations =
 	{
-	  Annotations(value.trim.split("[\\r\\n]+").map(_.trim).toList)
+	  Annotations(value.trim.split('*').map(_.trim).tail.toList)
 	}
 
 
