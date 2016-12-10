@@ -2,7 +2,7 @@ import BridgeExtender._
 import Direction._
 
 /**
- * This is an example of showing an auction and a hand part way through the play.
+ * This is an example of showing an auction and a hand.
  */
 object Hand2 extends App{
   val auction =
